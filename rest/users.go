@@ -116,17 +116,17 @@ func (c *Client) GetUsers(query map[string]string) (*usersResponse, error) {
 	return users, err
 }
 
-func (c *Client) GetUserInfo(userID string, username string) (*userResponse, error) {
+func (c *Client) GetUserInfo(userId string, username string) (*userResponse, error) {
 	user := new(userResponse)
 	url := c.getUrl() + "/api/v1/users.info?"
-	if userID != "" {
+	if userId != "" {
 		url += "userId=" + userId
 	} else {
 		url += "username=" + username
 	}
 	request, _ := http.NewRequest("GET", url, nil)
 
-	err = c.doRequest(request, user)
+	err := c.doRequest(request, user)
 	return user, err
 }
 
