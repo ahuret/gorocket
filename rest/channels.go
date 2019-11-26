@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -88,7 +89,11 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/create
 func (c *Client) CreateGroup(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "name": "%s" }`, channel.Name)
+	members, err := json.Marshal(channel.UserNames)
+	if err != nil {
+		return err
+	}
+	var body = fmt.Sprintf(`{ "name": "%s", "members": %s, "readOnly": %v }`, channel.Name, string(members), channel.ReadOnly)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.create", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
